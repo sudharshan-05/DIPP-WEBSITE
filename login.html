@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — D.I.P.P Club</title>
+    <link rel="icon" href="/logo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script type="module" src="/src/login.js"></script>
+</head>
+
+<body
+    class="login-page bg-bg text-white min-h-screen flex items-center justify-center font-sans relative overflow-hidden">
+    <div class="w-full max-w-[420px] px-5 relative z-2">
+        <div class="glass-strong rounded-3xl px-8 py-10 text-center shadow-[0_20px_60px_rgba(0,0,0,0.4)]">
+            <div class="mb-5">
+                <img src="/logo.png" alt="D.I.P.P Logo"
+                    class="w-14 h-14 mx-auto object-contain drop-shadow-[0_0_16px_rgba(124,58,237,0.7)]">
+                <span class="block text-[11px] font-semibold text-text2 tracking-[0.2em] mt-2 uppercase">D.I.P.P
+                    Club</span>
+            </div>
+            <h1 class="text-2xl font-extrabold mb-1.5">Welcome Back, <span class="glow-text">Builder</span></h1>
+            <p class="text-[13px] text-text2 mb-7">Sign in to your account</p>
+            <form class="flex flex-col gap-3 mb-5 text-left" id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Email" required autocomplete="email"
+                    class="w-full font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-3 outline-none transition-colors focus:border-accent placeholder:text-text2">
+                <div class="relative">
+                    <input type="password" id="loginPassword" placeholder="Password" required
+                        autocomplete="current-password"
+                        class="w-full font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-3 outline-none transition-colors focus:border-accent placeholder:text-text2 pr-10">
+                    <button type="button"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-none text-text2 cursor-pointer p-1 hover:text-white transition-colors"
+                        id="togglePassword" aria-label="Toggle password">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-red-400 text-xs text-center hidden" id="loginError">Invalid email or password</p>
+                <button type="submit"
+                    class="w-full text-center text-sm font-semibold px-6 py-3 rounded-full bg-accent text-white shadow-[0_2px_16px_rgba(124,58,237,0.3)] hover:bg-accent-dark hover:shadow-[0_6px_30px_rgba(124,58,237,0.5)] transition-all mt-1 cursor-pointer border-none"
+                    id="loginBtn">✦ Sign In</button>
+            </form>
+            <div class="border-t border-border pt-5">
+                <p class="text-xs text-text2 mb-3">Try a demo account:</p>
+                <div class="grid grid-cols-3 gap-2 mb-2">
+                    <button
+                        class="demo-card glass-card rounded-xl p-2.5 text-center cursor-pointer hover:border-accent transition-all border-none"
+                        data-email="president@dipp.club" data-password="president123" data-role="President">
+                        <strong class="block text-[12px] text-white">President</strong>
+                        <span class="block text-[10px] text-accent-light mt-0.5">Admin</span>
+                    </button>
+                    <button
+                        class="demo-card glass-card rounded-xl p-2.5 text-center cursor-pointer hover:border-accent transition-all border-none"
+                        data-email="vp@dipp.club" data-password="vp123" data-role="Vice President">
+                        <strong class="block text-[12px] text-white">VP</strong>
+                        <span class="block text-[10px] text-accent-light mt-0.5">Admin</span>
+                    </button>
+                    <button
+                        class="demo-card glass-card rounded-xl p-2.5 text-center cursor-pointer hover:border-accent transition-all border-none"
+                        data-email="lead@dipp.club" data-password="lead123" data-role="Lead">
+                        <strong class="block text-[12px] text-white">Lead</strong>
+                        <span class="block text-[10px] text-accent-light mt-0.5">Admin</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button
+                        class="demo-card glass-card rounded-xl p-2.5 text-center cursor-pointer hover:border-accent transition-all border-none"
+                        data-email="member@dipp.club" data-password="member123" data-role="Member">
+                        <strong class="block text-[12px] text-white">Member</strong>
+                        <span class="block text-[10px] text-accent-light mt-0.5">Admin</span>
+                    </button>
+                    <button
+                        class="demo-card glass-card rounded-xl p-2.5 text-center cursor-pointer hover:border-green-400 transition-all border-none"
+                        data-email="student@dipp.club" data-password="student123" data-role="Student">
+                        <strong class="block text-[12px] text-white">Student</strong>
+                        <span class="block text-[10px] text-green-400 mt-0.5">View Only</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

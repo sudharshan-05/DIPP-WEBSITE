@@ -1,0 +1,1130 @@
+@import "tailwindcss";
+
+/* === Custom Theme === */
+@theme {
+  --color-bg: #0a0118;
+  --color-bg2: #110226;
+  --color-bg-card: rgba(17, 2, 38, 0.6);
+  --color-text2: #a0a0b8;
+  --color-accent: #7c3aed;
+  --color-accent-light: #a855f7;
+  --color-accent-dark: #5b21b6;
+  --color-border: rgba(124, 58, 237, 0.18);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* ============================================================ */
+/* PAGE LOADING — Hide raw HTML flash, show after CSS loads     */
+/* ============================================================ */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+body.page-ready {
+  opacity: 1;
+}
+
+body.page-exit {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+/* ============================================================ */
+/* GLASSMORPHISM                                                  */
+/* ============================================================ */
+.glass {
+  background: rgba(10, 1, 24, 0.35);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(124, 58, 237, 0.12);
+}
+
+.glass-strong {
+  background: rgba(10, 1, 24, 0.25);
+  backdrop-filter: blur(60px) saturate(200%);
+  -webkit-backdrop-filter: blur(60px) saturate(200%);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(124, 58, 237, 0.1);
+}
+
+.glass-card {
+  background: rgba(17, 2, 38, 0.45);
+  backdrop-filter: blur(32px) saturate(160%);
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
+  border: 1px solid rgba(124, 58, 237, 0.15);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(124, 58, 237, 0.06);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* ============================================================ */
+/* HOVER GLOW — Every card/container glows on touch/hover       */
+/* ============================================================ */
+.glass-card:hover,
+.event-card-neon:hover,
+.stat-card-item:hover {
+  border-color: rgba(124, 58, 237, 0.55) !important;
+  box-shadow:
+    0 0 0 1px rgba(124, 58, 237, 0.3),
+    0 0 20px rgba(124, 58, 237, 0.25),
+    0 0 60px rgba(124, 58, 237, 0.1),
+    0 8px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(124, 58, 237, 0.12) !important;
+  transform: translateY(-4px);
+}
+
+/* Glowing outline on ANY interactive hover */
+.glow-hover {
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  border: 1px solid rgba(124, 58, 237, 0.15);
+}
+
+.glow-hover:hover {
+  border-color: rgba(124, 58, 237, 0.55);
+  box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.3), 0 0 20px rgba(124, 58, 237, 0.2), 0 0 50px rgba(124, 58, 237, 0.1);
+}
+
+/* ============================================================ */
+/* GLOW TEXT                                                      */
+/* ============================================================ */
+.glow-text {
+  background: linear-gradient(135deg, #a855f7, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.6)) drop-shadow(0 0 20px rgba(124, 58, 237, 0.35));
+}
+
+/* ============================================================ */
+/* NAV                                                            */
+/* ============================================================ */
+.nav-pill::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.5), rgba(168, 85, 247, 0.6), rgba(124, 58, 237, 0.5), transparent);
+}
+
+.nav-pill::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.2), rgba(124, 58, 237, 0.3), rgba(124, 58, 237, 0.2), transparent);
+}
+
+.navbar.scrolled .nav-pill {
+  background: rgba(10, 1, 24, 0.75);
+  backdrop-filter: blur(50px) saturate(200%);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45), 0 0 20px rgba(124, 58, 237, 0.1);
+}
+
+/* ============================================================ */
+/* HERO GLOWS                                                     */
+/* ============================================================ */
+.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, transparent 70%);
+  top: -150px;
+  left: -200px;
+}
+
+.glow-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.18) 0%, transparent 65%);
+  bottom: -60px;
+  right: 60px;
+}
+
+.glow-3 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.22) 0%, transparent 70%);
+  bottom: 30px;
+  right: 120px;
+  filter: blur(80px);
+}
+
+/* ============================================================ */
+/* NEON EVENT CARDS                                               */
+/* ============================================================ */
+.event-neon-gradient {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(to top, rgba(10, 1, 24, 0.95) 0%, rgba(17, 2, 38, 0.6) 50%, transparent 100%),
+    linear-gradient(135deg, rgba(124, 58, 237, 0.15) 0%, rgba(236, 72, 153, 0.12) 40%, rgba(139, 92, 246, 0.08) 100%);
+}
+
+.event-card-neon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(160deg, rgba(236, 72, 153, 0.06) 0%, rgba(124, 58, 237, 0.1) 30%, transparent 60%);
+  pointer-events: none;
+}
+
+.event-card-neon::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 3;
+  background: linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.5), rgba(124, 58, 237, 0.6), rgba(236, 72, 153, 0.5), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.event-card-neon:hover::after {
+  opacity: 1;
+}
+
+.conducted-gradient {
+  background: linear-gradient(to top, rgba(10, 1, 24, 0.95) 0%, rgba(17, 2, 38, 0.75) 50%, rgba(100, 80, 140, 0.06) 100%) !important;
+}
+
+/* ============================================================ */
+/* MODALS — Premium scale+fade+blur animations                   */
+/* ============================================================ */
+.modal-overlay {
+  display: none;
+  opacity: 0;
+}
+
+.modal-overlay.active {
+  display: flex;
+  animation: modalFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.modal-overlay.closing {
+  animation: modalFadeOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.modal-card-animate {
+  transform: scale(0.92) translateY(24px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.active .modal-card-animate {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.modal-overlay.closing .modal-card-animate {
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+  transition-duration: 0.25s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+
+  to {
+    opacity: 1;
+    backdrop-filter: blur(14px);
+  }
+}
+
+@keyframes modalFadeOut {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(14px);
+  }
+
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+}
+
+/* ============================================================ */
+/* SCROLL REVEAL                                                  */
+/* ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1), transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 {
+  transition-delay: 0.1s;
+}
+
+.reveal-delay-2 {
+  transition-delay: 0.2s;
+}
+
+.reveal-delay-3 {
+  transition-delay: 0.3s;
+}
+
+/* ============================================================ */
+/* STAT GLOW                                                      */
+/* ============================================================ */
+.stat-glow {
+  text-shadow: 0 0 12px rgba(124, 58, 237, 0.6), 0 0 30px rgba(124, 58, 237, 0.3);
+  color: #a855f7;
+}
+
+/* ============================================================ */
+/* FORM INPUTS                                                    */
+/* ============================================================ */
+.form-select-custom {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23a0a0b8' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+/* ============================================================ */
+/* MOBILE MENU                                                    */
+/* ============================================================ */
+.mobile-menu-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: white;
+  border-radius: 2px;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.mobile-menu-btn.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.mobile-menu-btn.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-btn.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ============================================================ */
+/* NAV LINKS MOBILE DROP                                          */
+/* ============================================================ */
+@media (max-width: 900px) {
+  .nav-links-mobile {
+    position: fixed;
+    top: 68px;
+    left: 12px;
+    right: 12px;
+    background: rgba(10, 1, 24, 0.96);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(124, 58, 237, 0.18);
+    border-radius: 16px;
+    flex-direction: column;
+    padding: 16px;
+    gap: 4px;
+    transform: translateY(-130%);
+    opacity: 0;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s;
+    z-index: 999;
+  }
+
+  .nav-links-mobile.active {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .logo-wordmark {
+    display: none;
+  }
+}
+
+/* ============================================================ */
+/* REMINDER BADGE                                                 */
+/* ============================================================ */
+.reminder-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background: #f59e0b;
+  color: #000;
+  font-size: 10px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  display: none;
+}
+
+/* ============================================================ */
+/* URGENT COUNTDOWN PULSE                                         */
+/* ============================================================ */
+@keyframes urgentPulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.urgent-event-border {
+  border-color: rgba(245, 158, 11, 0.6) !important;
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.3), 0 0 20px rgba(245, 158, 11, 0.15) !important;
+  animation: urgentPulse 2s ease-in-out infinite;
+}
+
+/* ============================================================ */
+/* SCROLLBAR                                                      */
+/* ============================================================ */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(124, 58, 237, 0.35);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(124, 58, 237, 0.6);
+}
+
+/* ============================================================ */
+/* FILE INPUT                                                     */
+/* ============================================================ */
+.file-input-hidden {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* ============================================================ */
+/* LOGIN PAGE BG GLOWS                                            */
+/* ============================================================ */
+.login-page::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  top: -150px;
+  right: -100px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.1), transparent 70%);
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+.login-page::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  bottom: -100px;
+  left: -100px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.12), transparent 70%);
+  border-radius: 50%;
+  filter: blur(80px);
+}
+
+/* ============================================================ */
+/* MARQUEE — Testimonials scroll                                  */
+/* ============================================================ */
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  0% {
+    transform: translateX(-50%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.marquee-outer {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.marquee-row {
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: marquee-left 32s linear infinite;
+}
+
+.marquee-track.marquee-reverse {
+  animation-name: marquee-right;
+}
+
+/* Pause on hover */
+.marquee-outer:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Individual testimonial card */
+.tcard {
+  flex-shrink: 0;
+  width: 300px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (max-width: 480px) {
+  .tcard {
+    width: 260px;
+  }
+}
+
+.tcard:hover {
+  transform: translateY(-4px);
+}
+
+/* Avatar inside card */
+.tcard-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Fade masks on left and right */
+.marquee-fade-left,
+.marquee-fade-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 160px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.marquee-fade-left {
+  left: 0;
+  background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);
+}
+
+.marquee-fade-right {
+  right: 0;
+  background: linear-gradient(to left, var(--color-bg) 0%, transparent 100%);
+}
+
+/* ============================================================ */
+/* TYPEWRITER CURSOR                                              */
+/* ============================================================ */
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  color: #a855f7;
+  font-weight: 400;
+  margin-left: 2px;
+  animation: blink 1s step-start infinite;
+  filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.8));
+}
+
+/* ============================================================ */
+/* MAGICUI DOCK — macOS-style magnify dock (vanilla JS/CSS)     */
+/* ============================================================ */
+
+/* Dock wrapper */
+.dock {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(10, 1, 24, 0.65);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(124, 58, 237, 0.25);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(124, 58, 237, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Each dock icon button */
+.dock-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(124, 58, 237, 0.12);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  color: #a855f7;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    width 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    height 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  transform-origin: bottom center;
+  flex-shrink: 0;
+}
+
+.dock-item svg {
+  width: 18px;
+  height: 18px;
+  transition: width 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
+}
+
+.dock-item:hover {
+  width: 56px;
+  height: 56px;
+  background: rgba(124, 58, 237, 0.25);
+  border-color: rgba(168, 85, 247, 0.55);
+  box-shadow:
+    0 0 0 2px rgba(124, 58, 237, 0.3),
+    0 0 20px rgba(124, 58, 237, 0.3),
+    0 6px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-8px);
+}
+
+.dock-item:hover svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Neighbour magnification — JS adds .dock-adjacent, .dock-near */
+.dock-item.dock-adjacent {
+  width: 48px;
+  height: 48px;
+  transform: translateY(-5px);
+}
+
+.dock-item.dock-adjacent svg {
+  width: 21px;
+  height: 21px;
+}
+
+.dock-item.dock-near {
+  width: 44px;
+  height: 44px;
+  transform: translateY(-2px);
+}
+
+.dock-item.dock-near svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Dock tooltip */
+.dock-item::before {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) scale(0.85);
+  background: rgba(10, 1, 24, 0.92);
+  backdrop-filter: blur(12px);
+  color: #e2e2f0;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.dock-item:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* Dock separator */
+.dock-sep {
+  width: 1px;
+  height: 28px;
+  background: rgba(124, 58, 237, 0.25);
+  margin: 0 2px;
+  align-self: center;
+}
+
+/* Project-card dock — shows on card hover */
+.project-card {
+  position: relative;
+}
+
+.project-card .dock-wrap {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  opacity: 0;
+  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.project-card:hover .dock-wrap {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+/* (ticker removed) */
+
+/* ============================================================ */
+/* ROADMAP BANNER                                                */
+/* ============================================================ */
+.roadmap-banner {
+  background: radial-gradient(ellipse 80% 60% at 30% 50%, #2a004a 0%, #09010f 70%);
+  border: 1px solid rgba(168, 85, 247, 0.18);
+  box-shadow: 0 0 60px rgba(168, 85, 247, 0.12), inset 0 0 80px rgba(0, 0, 0, 0.4);
+}
+
+/* Perspective grid floor */
+.roadmap-grid {
+  background-image:
+    linear-gradient(rgba(168, 85, 247, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(168, 85, 247, 0.12) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center center;
+  transform: perspective(600px) rotateX(28deg) scaleY(1.4);
+  transform-origin: 50% 80%;
+  opacity: 0.7;
+}
+
+/* Stars */
+.roadmap-star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  z-index: 3;
+  box-shadow: 0 0 4px 1px rgba(255, 255, 255, 0.4);
+}
+
+/* Milestone glassmorphism cards */
+.roadmap-card {
+  background: rgba(12, 4, 30, 0.65);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border: 1px solid rgba(168, 85, 247, 0.28);
+  border-radius: 12px;
+  padding: 10px 14px;
+  min-width: 160px;
+  max-width: 200px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.roadmap-card:hover {
+  border-color: rgba(168, 85, 247, 0.55);
+  box-shadow: 0 8px 32px rgba(168, 85, 247, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  transform: translateY(-3px);
+}
+
+/* Future / locked card — slightly more transparent */
+.roadmap-card-future {
+  background: rgba(8, 2, 20, 0.5);
+  border-color: rgba(96, 165, 250, 0.22);
+  opacity: 0.85;
+}
+
+/* ============================================================ */
+/* EVENT FILTER PILLS                                            */
+/* ============================================================ */
+.event-pill {
+  color: var(--color-text2);
+  border-color: var(--color-border);
+  background: transparent;
+}
+
+.event-pill:hover {
+  border-color: rgba(124, 58, 237, 0.5);
+  color: var(--color-accent-light);
+  background: rgba(124, 58, 237, 0.08);
+}
+
+.event-pill.active {
+  background: rgba(124, 58, 237, 0.18);
+  border-color: rgba(124, 58, 237, 0.5);
+  color: var(--color-accent-light);
+  box-shadow: 0 0 12px rgba(124, 58, 237, 0.2);
+}
+
+/* ============================================================ */
+/* MOBILE HAMBURGER                                              */
+/* ============================================================ */
+.mobile-menu-btn span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--color-text2);
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.mobile-menu-btn.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+  background: white;
+}
+
+.mobile-menu-btn.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-btn.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+  background: white;
+}
+
+.mobile-nav-open #mobileNavDrawer {
+  pointer-events: auto;
+}
+
+/* ============================================================ */
+/* LOADING SKELETON                                              */
+/* ============================================================ */
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+
+  100% {
+    background-position: 400px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 25%, rgba(124, 58, 237, 0.08) 50%, rgba(255, 255, 255, 0.04) 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.8s infinite;
+  border-radius: 12px;
+}
+
+.skeleton-card {
+  height: 300px;
+  border-radius: 16px;
+}
+
+/* ============================================================ */
+/* TEAM PORTRAIT CARDS                                          */
+/* ============================================================ */
+.team-portrait-card {
+  background: #08011a;
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(124, 58, 237, 0.08);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.team-portrait-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(124, 58, 237, 0.6);
+  box-shadow:
+    0 0 0 1px rgba(124, 58, 237, 0.35),
+    0 0 30px rgba(124, 58, 237, 0.25),
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(124, 58, 237, 0.12);
+}
+
+.team-portrait-img {
+  position: relative;
+}
+
+.team-photo-placeholder {
+  pointer-events: none;
+}
+
+.team-portrait-card img.team-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.team-portrait-card:hover img.team-photo {
+  transform: scale(1.04);
+}
+
+/* ============================================================ */
+/* TEAM CARD DOCK — hover only, smooth spring                   */
+/* ============================================================ */
+.team-card {
+  position: relative;
+}
+
+.team-card .dock-wrap {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%) translateY(14px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0s linear 0.3s;
+  pointer-events: none;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.team-card:hover .dock-wrap {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+  transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), visibility 0s linear 0s;
+}
+
+/* ============================================================ */
+/* GLOBAL SMOOTH TRANSITIONS                                     */
+/* ============================================================ */
+*,
+*::before,
+*::after {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+a,
+button,
+[role="button"] {
+  transition: color 0.22s ease, background-color 0.22s ease,
+    border-color 0.22s ease, box-shadow 0.22s ease,
+    opacity 0.22s ease, transform 0.22s ease, filter 0.22s ease;
+}
+
+section {
+  transition: background 0.4s ease;
+}
+
+/* Modal / panel slide-in */
+.modal-card-animate {
+  animation: slideUpFade 0.32s cubic-bezier(0.34, 1.2, 0.64, 1) both;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Page sections reveal */
+.reveal {
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Nav links */
+.nav-link {
+  transition: color 0.22s ease, background-color 0.22s ease, text-shadow 0.22s ease !important;
+}
+
+/* Event cards */
+.event-card-neon {
+  transition: transform 0.3s cubic-bezier(0.34, 1.2, 0.64, 1),
+    border-color 0.3s ease,
+    box-shadow 0.3s ease !important;
+}
+
+/* ============================================================ */
+/* TEAM DS CARD (Exact reference image match)                   */
+/* ============================================================ */
+.team-ds-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.team-ds-card {
+  position: relative;
+  width: 260px;
+  height: 380px;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  background: linear-gradient(145deg, #1e0b50 0%, #0a0520 100%);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-shrink: 0;
+}
+
+.team-ds-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.4), 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Faint grid background (visible on hover) */
+.team-ds-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.team-ds-card:hover .team-ds-grid {
+  opacity: 1;
+}
+
+/* Image Layer */
+.team-ds-img-wrap {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  background: #0f172a;
+}
+
+.team-ds-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+/* Dark gradient at bottom of image to ensure text is readable */
+.team-ds-img-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 40%, rgba(0, 0, 0, 0) 100%);
+}
+
+.team-ds-card:hover .team-ds-img-wrap {
+  opacity: 0;
+  transform: scale(1.05);
+  /* slightly zooms as it fades out */
+}
+
+/* Info Layer (Name and Role) */
+.team-ds-info {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 24px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+}
+
+.team-ds-card:hover .team-ds-info {
+  bottom: calc(100% - 70px);
+  /* Moves to top */
+}
+
+.team-ds-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.team-ds-role {
+  font-size: 12px;
+  color: #818cf8;
+  margin-top: 4px;
+}
+
+/* Description Layer (appears on hover at the bottom) */
+.team-ds-desc {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 24px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.65);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.4s ease;
+  transition-delay: 0.1s;
+  /* wait slightly before fading in */
+  z-index: 5;
+}
+
+.team-ds-card:hover .team-ds-desc {
+  opacity: 1;
+  transform: translateY(0);
+}
