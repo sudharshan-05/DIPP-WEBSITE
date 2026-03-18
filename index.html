@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -202,13 +202,17 @@
     <!-- Events -->
     <section class="py-20 bg-bg reveal" id="events">
         <div class="max-w-[1200px] mx-auto px-10">
-            <div class="text-center mb-12">
-                <h2 class="text-[clamp(28px,4vw,42px)] font-extrabold leading-tight mb-3">Events that <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-[#f59e0b] to-[#d97706]">push your
-                        limits</span></h2>
-                <p class="text-[15px] text-text2 max-w-[500px] mx-auto leading-relaxed">Hands-on workshops, nail-biting
-                    competitions, and all-night hackathons. Every event is designed to make you build, break, and learn.
-                </p>
+            <div class="flex flex-col md:flex-row md:items-start justify-between gap-8 md:gap-12 mb-16">
+                <div>
+                    <h2 class="text-[clamp(36px,5vw,52px)] font-extrabold leading-[1.05] tracking-tight max-w-[500px]">Events that <br><span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-[#f59e0b] to-[#d97706]">push your
+                            limits</span></h2>
+                </div>
+                <div class="max-w-[500px] md:pt-2">
+                    <p class="text-[16px] md:text-[19px] text-text2 leading-relaxed m-0 text-left">Hands-on workshops, nail-biting
+                        competitions, and all-night hackathons. Every event is designed to make you build, break, and learn.
+                    </p>
+                </div>
             </div>
             <!-- Featured Event -->
             <div class="relative rounded-2xl overflow-hidden mb-12 border border-accent/20 h-[280px] max-[900px]:h-[220px] cursor-pointer glass transition-all duration-300 hover:-translate-y-1 hover:border-accent/50 hover:shadow-[0_0_0_1px_rgba(124,58,237,0.3),0_0_40px_rgba(124,58,237,0.15)]"
@@ -544,15 +548,22 @@
     <!-- Projects -->
     <section class="py-20 bg-bg2 reveal" id="projects">
         <div class="max-w-[1200px] mx-auto px-10">
-            <div class="text-center mb-12">
-                <h2 class="text-[clamp(28px,4vw,42px)] font-extrabold leading-tight mb-3">Things we've <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-[#f59e0b] to-[#d97706]">actually
-                        shipped</span></h2>
-                <p class="text-[15px] text-text2 max-w-[500px] mx-auto leading-relaxed">From gesture-controlled drones
-                    to smart traffic systems — real hardware and software, built by members, owned by the club.</p>
+            <div class="flex flex-col md:flex-row md:items-start justify-between gap-8 md:gap-12 mb-16">
+                <div>
+                    <h2 class="text-[clamp(36px,5vw,52px)] font-extrabold leading-[1.05] tracking-tight max-w-[500px] mb-4">Things we've <br><span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-[#f59e0b] to-[#d97706]">actually
+                            shipped</span></h2>
+                    <!-- Admin: Add Project Button -->
+                    <button class="bg-accent/12 text-accent-light border border-accent/25 text-xs font-semibold px-4 py-1.5 rounded-2xl cursor-pointer admin-only hover:bg-accent hover:text-white transition-all" id="openAddProject">+ Add Project</button>
+                </div>
+                <div class="max-w-[500px] md:pt-2">
+                    <p class="text-[16px] md:text-[19px] text-text2 leading-relaxed m-0 text-left">From gesture-controlled drones
+                        to smart traffic systems — real hardware and software, built by members, owned by the club.</p>
+                </div>
             </div>
         </div>
-        </div>
+        <div class="max-w-[1200px] mx-auto px-10 relative">
+            <div id="projectsGrid" class="grid grid-cols-3 max-[1024px]:grid-cols-2 max-[768px]:grid-cols-1 gap-5">
         <div class="grid grid-cols-3 max-[1024px]:grid-cols-2 max-[768px]:grid-cols-1 gap-5">
             <div class="glass-card rounded-2xl overflow-hidden project-card">
                 <div class="h-[180px] overflow-hidden"><img
@@ -678,19 +689,130 @@
                     </div>
                 </div>
             </div>
-        </div>
+            </div>
         </div>
     </section>
+
+    <!-- Add Project Modal -->
+    <div class="modal-overlay fixed inset-0 z-[9999] bg-black/70 items-center justify-center p-5" id="addProjectModal">
+        <div class="modal-card-animate glass-strong rounded-2xl w-full max-w-[480px] max-h-[90vh] overflow-y-auto p-8 relative shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-[22px] font-extrabold">🚀 Add <span class="glow-text">Project</span></h2>
+                <button class="bg-transparent border-none text-text2 text-[26px] cursor-pointer p-1 leading-none hover:text-white" id="closeProjectModal">&times;</button>
+            </div>
+            <form class="flex flex-col gap-4" id="addProjectForm">
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[13px] font-medium text-text2">📋 Project Title *</label>
+                    <input type="text" id="projectTitle" placeholder="e.g. Smart Traffic Controller" required class="font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 outline-none focus:border-accent">
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[13px] font-medium text-text2">📝 Description *</label>
+                    <textarea id="projectDesc" placeholder="Brief project description..." rows="3" required class="font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 outline-none resize-y min-h-[80px] focus:border-accent"></textarea>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[13px] font-medium text-text2">🏷️ Tags (comma separated)</label>
+                    <input type="text" id="projectTags" placeholder="e.g. OpenCV, Raspberry Pi, Python" class="font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 outline-none focus:border-accent">
+                </div>
+                <!-- Links -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[13px] font-medium text-text2">💻 GitHub URL</label>
+                        <input type="url" id="projectGithub" placeholder="https://github.com/..." class="font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 outline-none focus:border-accent">
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[13px] font-medium text-text2">🌐 Live Demo URL</label>
+                        <input type="url" id="projectDemo" placeholder="https://..." class="font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 outline-none focus:border-accent">
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[13px] font-medium text-text2">⭐ Star URL</label>
+                    <input type="url" id="projectStar" placeholder="https://..." class="font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 outline-none focus:border-accent">
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[13px] font-medium text-text2">📸 Project Image</label>
+                    <div class="relative drive-upload" id="projectImageUpload">
+                        <div class="flex flex-col items-center gap-2.5 p-5 border-[1.5px] border-dashed border-accent/30 rounded-xl text-center cursor-pointer hover:border-accent/60 transition-colors" onclick="document.getElementById('projectFileInput').click()">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            <span class="text-xs text-text2" id="projectFileLabel">Upload image or drag & drop</span>
+                        </div>
+                        <input type="file" accept="image/*" id="projectFileInput" style="display:none" onchange="document.getElementById('projectFileLabel').textContent = this.files[0]?.name || 'Upload image or drag & drop'">
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full text-center text-sm font-semibold px-6 py-3 rounded-full bg-accent text-white shadow-[0_2px_16px_rgba(124,58,237,0.3)] hover:bg-accent-dark transition-all">Add Project</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Team Member Modal -->
+    <div class="modal-overlay fixed inset-0 z-[9999] bg-black/70 items-center justify-center p-5" id="addTeamModal">
+        <div class="modal-card-animate glass-strong rounded-2xl w-full max-w-[480px] max-h-[90vh] overflow-y-auto p-8 relative shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-[22px] font-extrabold">👥 Add <span class="glow-text">Team Member</span></h2>
+                <button class="bg-transparent border-none text-text2 text-[26px] cursor-pointer p-1 leading-none hover:text-white" id="closeTeamModal">&times;</button>
+            </div>
+            <form class="flex flex-col gap-4" id="addTeamForm">
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[13px] font-medium text-text2">📋 Full Name *</label>
+                    <input type="text" id="teamName" placeholder="e.g. John Doe" required class="font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 outline-none focus:border-accent">
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[13px] font-medium text-text2">🎖️ Role *</label>
+                    <input type="text" id="teamRole" placeholder="e.g. President" required class="font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 outline-none focus:border-accent">
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[13px] font-medium text-text2">📝 Bio *</label>
+                    <textarea id="teamBio" placeholder="Brief bio..." rows="3" required class="font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 outline-none resize-y min-h-[80px] focus:border-accent"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[13px] font-medium text-text2">🔗 LinkedIn URL</label>
+                        <input type="url" id="teamLinkedin" placeholder="https://linkedin.com/..." class="font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 outline-none focus:border-accent">
+                    </div>
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-[13px] font-medium text-text2">🔗 GitHub URL</label>
+                        <input type="url" id="teamGithub" placeholder="https://github.com/..." class="font-sans text-[13px] text-white bg-white/[0.04] border border-border rounded-lg px-3.5 py-2.5 outline-none focus:border-accent">
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[13px] font-medium text-text2">📸 Member Photo</label>
+                    <div class="relative drive-upload" id="teamImageUpload">
+                        <div class="flex flex-col items-center gap-2.5 p-5 border-[1.5px] border-dashed border-accent/30 rounded-xl text-center cursor-pointer hover:border-accent/60 transition-colors" onclick="document.getElementById('teamFileInput').click()">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="1.5">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            <span class="text-xs text-text2" id="teamFileLabel">Upload photo or drag & drop</span>
+                        </div>
+                        <input type="file" accept="image/*" id="teamFileInput" style="display:none" onchange="document.getElementById('teamFileLabel').textContent = this.files[0]?.name || 'Upload photo or drag & drop'">
+                    </div>
+                </div>
+                <button type="submit" class="w-full text-center text-sm font-semibold px-6 py-3 rounded-full bg-accent text-white shadow-[0_2px_16px_rgba(124,58,237,0.3)] hover:bg-accent-dark transition-all">Add Member</button>
+            </form>
+        </div>
+    </div>
 
     <!-- Team -->
     <section class="py-20 bg-bg reveal" id="team">
         <div class="max-w-[1200px] mx-auto px-10">
-            <div class="text-center mb-12">
-                <h2 class="text-[clamp(28px,4vw,42px)] font-extrabold leading-tight mb-3">The people <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-[#f59e0b] to-[#d97706]">behind the
-                        build</span></h2>
-                <p class="text-[15px] text-text2 max-w-[500px] mx-auto leading-relaxed">Engineers, designers, and makers
-                    — the core team that drives every project, event, and workshop that D.I.P.P delivers.</p>
+            <div class="flex flex-col md:flex-row md:items-start justify-between gap-8 md:gap-12 mb-16">
+                <div>
+                    <h2 class="text-[clamp(36px,5vw,52px)] font-extrabold leading-[1.05] tracking-tight max-w-[500px] mb-4">The people <br><span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-[#f59e0b] to-[#d97706]">behind the
+                            build</span></h2>
+                    <!-- Admin: Add Team Member Button -->
+                    <button class="bg-accent/12 text-accent-light border border-accent/25 text-xs font-semibold px-4 py-1.5 rounded-2xl cursor-pointer admin-only hover:bg-accent hover:text-white transition-all" id="openAddTeam">+ Add Team Member</button>
+                </div>
+                <div class="max-w-[500px] md:pt-2">
+                    <p class="text-[16px] md:text-[19px] text-text2 leading-relaxed m-0 text-left">Engineers, designers, and makers
+                        — the core team that drives every project, event, and workshop that D.I.P.P delivers.</p>
+                </div>
             </div>
 
             <!-- Hover-expand portrait cards -->
@@ -859,12 +981,20 @@
     <!-- Gallery -->
     <section class="py-20 bg-bg2 reveal" id="gallery">
         <div class="max-w-[1200px] mx-auto px-10">
-            <div class="text-center mb-12">
-                <h2 class="text-[clamp(28px,4vw,42px)] font-extrabold leading-tight mb-3">Moments worth <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-[#f59e0b] to-[#d97706]">remembering</span>
-                </h2>
-                <p class="text-[15px] text-text2 max-w-[500px] mx-auto leading-relaxed">Late nights, award stages,
-                    soldering fumes, and celebration shots — snapshots from every event, workshop, and meetup.</p>
+            <div class="flex flex-col md:flex-row md:items-start justify-between gap-8 md:gap-12 mb-16">
+                <div>
+                    <h2 class="text-[clamp(36px,5vw,52px)] font-extrabold leading-[1.05] tracking-tight max-w-[500px]">Moments worth <br><span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-[#f59e0b] to-[#d97706]">remembering</span>
+                    </h2>
+                    <!-- Admin: Add Album Button (Moved here for consistency) -->
+                    <button
+                        class="bg-accent/12 text-accent-light border border-accent/25 text-xs font-semibold px-4 py-1.5 rounded-2xl cursor-pointer president-only hover:bg-accent hover:text-white transition-all mt-4"
+                        id="openAddAlbum">+ Add Event Album</button>
+                </div>
+                <div class="max-w-[500px] md:pt-2">
+                    <p class="text-[16px] md:text-[19px] text-text2 leading-relaxed m-0 text-left">Late nights, award stages,
+                        soldering fumes, and celebration shots — snapshots from every event, workshop, and meetup.</p>
+                </div>
             </div>
             <div class="mb-12">
                 <div class="flex justify-between items-start mb-5 gap-5 max-[900px]:flex-col">
@@ -1260,10 +1390,13 @@
     <!-- Achievements / Roadmap -->
     <section class="py-20 bg-[#07010f] reveal" id="milestones">
         <div class="max-w-[1200px] mx-auto px-6 md:px-10">
-            <div class="text-center mb-10">
-                <h2 class="text-[clamp(26px,4vw,42px)] font-extrabold mb-2">Our <span class="glow-text">Journey</span>
-                </h2>
-                <p class="text-[14px] text-text2">From a spark of an idea to a thriving community.</p>
+            <div class="flex flex-col md:flex-row md:items-start justify-between gap-8 md:gap-12 mb-16">
+                <div>
+                   <h2 class="text-[clamp(36px,5vw,52px)] font-extrabold leading-[1.05] tracking-tight max-w-[500px]">Our <br><span class="glow-text">Journey</span></h2>
+                </div>
+                <div class="max-w-[500px] md:pt-2">
+                    <p class="text-[16px] md:text-[19px] text-text2 leading-relaxed m-0 text-left">From a spark of an idea to a thriving community.</p>
+                </div>
             </div>
 
             <!-- Roadmap banner -->
@@ -1324,28 +1457,28 @@
 
                 <!-- Milestone labels over nodes -->
                 <!-- Phase 1: Club Started -->
-                <div class="roadmap-card absolute z-[10]" style="left:11%;top:52%">
+                <div class="roadmap-card absolute z-[10]" style="left:12%;top:20%">
                     <span class="text-[10px] font-bold text-pink-400 flex items-center gap-1">✓ 2023 · Year 1</span>
                     <h4 class="text-[13px] font-bold mt-0.5 text-white">🌱 Club Started</h4>
                     <p class="text-[11px] text-text2 mt-0.5 leading-snug">D.I.P.P was founded</p>
                 </div>
 
                 <!-- Phase 2: Conducted Events -->
-                <div class="roadmap-card absolute z-[10]" style="left:29%;top:28%">
+                <div class="roadmap-card absolute z-[10]" style="left:30%;top:32%">
                     <span class="text-[10px] font-bold text-purple-400 flex items-center gap-1">✓ 2023–24</span>
                     <h4 class="text-[13px] font-bold mt-0.5 text-white">🏆 Conducted 4 Events</h4>
                     <p class="text-[11px] text-text2 mt-0.5 leading-snug">Workshops &amp; competitions</p>
                 </div>
 
                 <!-- Phase 3: 70+ Members -->
-                <div class="roadmap-card absolute z-[10]" style="left:48%;top:10%">
+                <div class="roadmap-card absolute z-[10]" style="left:50%;top:2%">
                     <span class="text-[10px] font-bold text-indigo-400 flex items-center gap-1">✓ 2024 · Year 2</span>
                     <h4 class="text-[13px] font-bold mt-0.5 text-white">👥 70+ Members</h4>
                     <p class="text-[11px] text-text2 mt-0.5 leading-snug">Growing community</p>
                 </div>
 
                 <!-- Phase 4: Future -->
-                <div class="roadmap-card roadmap-card-future absolute z-[10]" style="left:68%;top:46%">
+                <div class="roadmap-card roadmap-card-future absolute z-[10]" style="left:74%;top:10%">
                     <span class="text-[10px] font-bold text-blue-400 flex items-center gap-1">🔒 2025 · Year 3</span>
                     <h4 class="text-[13px] font-bold mt-0.5 text-white">🚀 Growing Strong</h4>
                     <p class="text-[11px] text-text2 mt-0.5 leading-snug">More events coming soon</p>
@@ -1354,7 +1487,7 @@
                 <!-- Brand label bottom-right -->
                 <div class="absolute bottom-5 right-6 z-[10]">
                     <p
-                        class="text-[22px] font-extrabold text-white leading-tight tracking-tight drop-shadow-[0_2px_12px_rgba(168,85,247,0.5)]">
+                        class="text-[22px] font-extrabold text-white leading-tight tracking-tight drop-shadow-[0_2px_12px_rgba(168,85,247,0.5)] text-right">
                         D.I.P.P's<br>Journey</p>
                 </div>
             </div>
@@ -1364,12 +1497,16 @@
     <!-- Resources -->
     <section class="py-20 bg-bg2 reveal" id="resources">
         <div class="max-w-[1200px] mx-auto px-10">
-            <div class="text-center mb-12">
-                <h2 class="text-[clamp(28px,4vw,42px)] font-extrabold leading-tight mb-3">Learn what <span
-                        class="text-transparent bg-clip-text bg-gradient-to-r from-[#f59e0b] to-[#d97706]">matters
-                        most</span></h2>
-                <p class="text-[15px] text-text2 max-w-[500px] mx-auto leading-relaxed">Curated tutorials, guides, and
-                    references — hand-picked by D.I.P.P members to accelerate your hardware and software skills.</p>
+            <div class="flex flex-col md:flex-row md:items-start justify-between gap-8 md:gap-12 mb-16">
+                <div>
+                    <h2 class="text-[clamp(36px,5vw,52px)] font-extrabold leading-[1.05] tracking-tight max-w-[500px]">Learn what <br><span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-[#f59e0b] to-[#d97706]">matters
+                            most</span></h2>
+                </div>
+                <div class="max-w-[500px] md:pt-2">
+                    <p class="text-[16px] md:text-[19px] text-text2 leading-relaxed m-0 text-left">Curated tutorials, guides, and
+                        references — hand-picked by D.I.P.P members to accelerate your hardware and software skills.</p>
+                </div>
             </div>
             <div class="grid grid-cols-2 max-[768px]:grid-cols-1 gap-4">
                 <div class="glass-card rounded-2xl p-7">
