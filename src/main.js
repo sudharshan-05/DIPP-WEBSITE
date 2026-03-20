@@ -163,58 +163,6 @@ function closeModal(id) {
 window.openModal = openModal;
 window.closeModal = closeModal;
 
-// ---- Delete Handlers ----
-window.deleteEvent = async function(id) {
-    if (!confirm('Delete this event?')) return;
-    try {
-        const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error('Failed');
-        // Remove card from DOM
-        document.querySelectorAll(`[onclick*="'${id}'"]`).forEach(el => {
-            const card = el.closest('.event-card-neon') || el.closest('[data-category]');
-            if (card) card.remove();
-        });
-        delete eventData[id];
-        showToast('🗑 Event deleted');
-    } catch(e) { console.error(e); showToast('❌ Failed to delete event'); }
-};
-
-window.deleteProject = async function(id) {
-    if (!confirm('Delete this project?')) return;
-    try {
-        const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error('Failed');
-        const btn = document.querySelector(`[onclick*="deleteProject('${id}')"]`);
-        const card = btn?.closest('.group');
-        if (card) card.remove();
-        showToast('🗑 Project deleted');
-    } catch(e) { console.error(e); showToast('❌ Failed to delete project'); }
-};
-
-window.deleteTeam = async function(id) {
-    if (!confirm('Delete this team member?')) return;
-    try {
-        const res = await fetch(`/api/team/${id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error('Failed');
-        const btn = document.querySelector(`[onclick*="deleteTeam('${id}')"]`);
-        const card = btn?.closest('.team-ds-card');
-        if (card) card.remove();
-        showToast('🗑 Team member deleted');
-    } catch(e) { console.error(e); showToast('❌ Failed to delete team member'); }
-};
-
-window.deleteAlbum = async function(id) {
-    if (!confirm('Delete this album?')) return;
-    try {
-        const res = await fetch(`/api/gallery/${id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error('Failed');
-        const btn = document.querySelector(`[onclick*="deleteAlbum('${id}')"]`);
-        const card = btn?.closest('.group');
-        if (card) card.remove();
-        showToast('🗑 Album deleted');
-    } catch(e) { console.error(e); showToast('❌ Failed to delete album'); }
-};
-
 // ---- Typewriter ----
 function initTypewriter() {
     const el = document.getElementById('typewriter-word');
