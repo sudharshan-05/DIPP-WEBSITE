@@ -24,7 +24,7 @@
             class="nav-pill glass-strong flex items-center justify-between h-[52px] px-5 pr-2 rounded-full relative overflow-visible">
             <a href="#hero" class="flex items-center gap-2.5 shrink-0">
                 <img src="/logo.png" alt="D.I.P.P Logo"
-                    class="w-[42px] h-[42px] object-contain drop-shadow-[0_0_8px_rgba(124,58,237,0.7)]">
+                    class="w-[52px] h-[52px] object-contain drop-shadow-[0_0_8px_rgba(124,58,237,0.7)]">
                 <span class="text-[13px] font-semibold tracking-tight whitespace-nowrap logo-wordmark">Digital Image
                     Processing And Programming Club</span>
             </a>
@@ -487,8 +487,8 @@
                                 class="bg-accent/12 text-accent-light border border-accent/25 text-xs font-semibold px-4 py-1.5 rounded-2xl cursor-pointer hover:bg-accent hover:text-white transition-all">📁
                                 Browse</button>
                         </div>
-                        <input type="file" accept="image/*" id="eventFileInput" style="display:none"
-                            onchange="document.getElementById('eventFileLabel').textContent = this.files[0]?.name || 'Upload image or drag & drop'">
+                        <input type="file" accept="image/*" id="eventFileInput" style="display:none" multiple
+                            onchange="document.getElementById('eventFileLabel').textContent = this.files.length > 0 ? this.files.length + ' image(s) selected' : 'Upload image or drag & drop'">
                     </div>
                 </div>
                 <div class="flex flex-col gap-1.5"><label class="text-[13px] font-medium text-text2">🔗 Registration
@@ -740,7 +740,7 @@
                             </svg>
                             <span class="text-xs text-text2" id="projectFileLabel">Upload image or drag & drop</span>
                         </div>
-                        <input type="file" accept="image/*" id="projectFileInput" style="display:none" onchange="document.getElementById('projectFileLabel').textContent = this.files[0]?.name || 'Upload image or drag & drop'">
+                        <input type="file" accept="image/*" id="projectFileInput" style="display:none" multiple onchange="document.getElementById('projectFileLabel').textContent = this.files.length > 0 ? this.files.length + ' image(s) selected' : 'Upload image or drag & drop'">
                     </div>
                 </div>
                 
@@ -790,7 +790,7 @@
                             </svg>
                             <span class="text-xs text-text2" id="teamFileLabel">Upload photo or drag & drop</span>
                         </div>
-                        <input type="file" accept="image/*" id="teamFileInput" style="display:none" onchange="document.getElementById('teamFileLabel').textContent = this.files[0]?.name || 'Upload photo or drag & drop'">
+                        <input type="file" accept="image/*" id="teamFileInput" style="display:none" multiple onchange="document.getElementById('teamFileLabel').textContent = this.files.length > 0 ? this.files.length + ' image(s) selected' : 'Upload photo or drag & drop'">
                     </div>
                 </div>
                 <button type="submit" class="w-full text-center text-sm font-semibold px-6 py-3 rounded-full bg-accent text-white shadow-[0_2px_16px_rgba(124,58,237,0.3)] hover:bg-accent-dark transition-all">Add Member</button>
@@ -1108,7 +1108,7 @@
                             hardware. I went from zero to building my own IoT project in one semester."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-accent">AL</div>
-                            <div><strong class="text-sm block">Amira L.</strong><span class="text-xs text-text2">CS
+                            <div><strong class="text-sm block">Amira L.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1120,7 +1120,7 @@
                             approach and mentorship from senior members is unmatched."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-violet-600">KS</div>
-                            <div><strong class="text-sm block">Khalid S.</strong><span class="text-xs text-text2">EE
+                            <div><strong class="text-sm block">Khalid S.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1133,7 +1133,7 @@
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-violet-800">LT</div>
                             <div><strong class="text-sm block">Layla T.</strong><span
-                                    class="text-xs text-text2">Mechatronics</span></div>
+                                    class="text-xs text-text2">ECE Student</span></div>
                         </div>
                     </div>
                     <!-- Card 4 -->
@@ -1144,7 +1144,7 @@
                             needed. Professional-level skills taught with clarity."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-purple-900">RA</div>
-                            <div><strong class="text-sm block">Rami A.</strong><span class="text-xs text-text2">IT
+                            <div><strong class="text-sm block">Rami A.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1156,7 +1156,7 @@
                             well-organized and the team cares about every member."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-violet-600">HM</div>
-                            <div><strong class="text-sm block">Hana M.</strong><span class="text-xs text-text2">EE
+                            <div><strong class="text-sm block">Hana M.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1168,7 +1168,7 @@
                             systems — D.I.P.P gave me a solid foundation for my career."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-violet-800">ZF</div>
-                            <div><strong class="text-sm block">Ziad F.</strong><span class="text-xs text-text2">CS
+                            <div><strong class="text-sm block">Ziad F.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1180,7 +1180,7 @@
                             hardware. I went from zero to building my own IoT project in one semester."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-accent">AL</div>
-                            <div><strong class="text-sm block">Amira L.</strong><span class="text-xs text-text2">CS
+                            <div><strong class="text-sm block">Amira L.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1191,7 +1191,7 @@
                             approach and mentorship from senior members is unmatched."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-violet-600">KS</div>
-                            <div><strong class="text-sm block">Khalid S.</strong><span class="text-xs text-text2">EE
+                            <div><strong class="text-sm block">Khalid S.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1203,7 +1203,7 @@
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-violet-800">LT</div>
                             <div><strong class="text-sm block">Layla T.</strong><span
-                                    class="text-xs text-text2">Mechatronics</span></div>
+                                    class="text-xs text-text2">ECE Student</span></div>
                         </div>
                     </div>
                     <div class="tcard glass-card rounded-2xl p-7 relative">
@@ -1213,7 +1213,7 @@
                             needed. Professional-level skills taught with clarity."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-purple-900">RA</div>
-                            <div><strong class="text-sm block">Rami A.</strong><span class="text-xs text-text2">IT
+                            <div><strong class="text-sm block">Rami A.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1224,7 +1224,7 @@
                             well-organized and the team cares about every member."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-violet-600">HM</div>
-                            <div><strong class="text-sm block">Hana M.</strong><span class="text-xs text-text2">EE
+                            <div><strong class="text-sm block">Hana M.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1235,7 +1235,7 @@
                             systems — D.I.P.P gave me a solid foundation for my career."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-violet-800">ZF</div>
-                            <div><strong class="text-sm block">Ziad F.</strong><span class="text-xs text-text2">CS
+                            <div><strong class="text-sm block">Ziad F.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1252,7 +1252,7 @@
                             college life. The projects pushed me beyond the classroom."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-accent">NJ</div>
-                            <div><strong class="text-sm block">Nour J.</strong><span class="text-xs text-text2">CS
+                            <div><strong class="text-sm block">Nour J.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1263,7 +1263,7 @@
                             internship. I learned more in one weekend than an entire semester."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-violet-600">MA</div>
-                            <div><strong class="text-sm block">Mohamed A.</strong><span class="text-xs text-text2">EE
+                            <div><strong class="text-sm block">Mohamed A.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1275,7 +1275,7 @@
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-violet-800">SO</div>
                             <div><strong class="text-sm block">Sara O.</strong><span
-                                    class="text-xs text-text2">Mechatronics</span></div>
+                                    class="text-xs text-text2">ECE Student</span></div>
                         </div>
                     </div>
                     <div class="tcard glass-card rounded-2xl p-7 relative">
@@ -1285,7 +1285,7 @@
                             won two — D.I.P.P training made all the difference."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-purple-900">YK</div>
-                            <div><strong class="text-sm block">Yassin K.</strong><span class="text-xs text-text2">IT
+                            <div><strong class="text-sm block">Yassin K.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1296,7 +1296,7 @@
                             whole new world for me. Highly recommend to every engineer."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-violet-600">FB</div>
-                            <div><strong class="text-sm block">Farah B.</strong><span class="text-xs text-text2">EE
+                            <div><strong class="text-sm block">Farah B.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1307,7 +1307,7 @@
                             community, and events that actually prepare you for industry."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-violet-800">TH</div>
-                            <div><strong class="text-sm block">Tarek H.</strong><span class="text-xs text-text2">CS
+                            <div><strong class="text-sm block">Tarek H.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>
@@ -1319,7 +1319,7 @@
                             college life. The projects pushed me beyond the classroom."</p>
                         <div class="flex items-center gap-3">
                             <div class="tcard-avatar bg-accent">NJ</div>
-                            <div><strong class="text-sm block">Nour J.</strong><span class="text-xs text-text2">CS
+                            <div><strong class="text-sm block">Nour J.</strong><span class="text-xs text-text2">ECE
                                     Student</span></div>
                         </div>
                     </div>

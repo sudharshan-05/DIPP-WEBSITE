@@ -163,6 +163,58 @@ function closeModal(id) {
 window.openModal = openModal;
 window.closeModal = closeModal;
 
+// ---- Delete Handlers ----
+window.deleteEvent = async function(id) {
+    if (!confirm('Delete this event?')) return;
+    try {
+        const res = await fetch(`/api/events/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Failed');
+        // Remove card from DOM
+        document.querySelectorAll(`[onclick*="'${id}'"]`).forEach(el => {
+            const card = el.closest('.event-card-neon') || el.closest('[data-category]');
+            if (card) card.remove();
+        });
+        delete eventData[id];
+        showToast('🗑 Event deleted');
+    } catch(e) { console.error(e); showToast('❌ Failed to delete event'); }
+};
+
+window.deleteProject = async function(id) {
+    if (!confirm('Delete this project?')) return;
+    try {
+        const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Failed');
+        const btn = document.querySelector(`[onclick*="deleteProject('${id}')"]`);
+        const card = btn?.closest('.group');
+        if (card) card.remove();
+        showToast('🗑 Project deleted');
+    } catch(e) { console.error(e); showToast('❌ Failed to delete project'); }
+};
+
+window.deleteTeam = async function(id) {
+    if (!confirm('Delete this team member?')) return;
+    try {
+        const res = await fetch(`/api/team/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Failed');
+        const btn = document.querySelector(`[onclick*="deleteTeam('${id}')"]`);
+        const card = btn?.closest('.team-ds-card');
+        if (card) card.remove();
+        showToast('🗑 Team member deleted');
+    } catch(e) { console.error(e); showToast('❌ Failed to delete team member'); }
+};
+
+window.deleteAlbum = async function(id) {
+    if (!confirm('Delete this album?')) return;
+    try {
+        const res = await fetch(`/api/gallery/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Failed');
+        const btn = document.querySelector(`[onclick*="deleteAlbum('${id}')"]`);
+        const card = btn?.closest('.group');
+        if (card) card.remove();
+        showToast('🗑 Album deleted');
+    } catch(e) { console.error(e); showToast('❌ Failed to delete album'); }
+};
+
 // ---- Typewriter ----
 function initTypewriter() {
     const el = document.getElementById('typewriter-word');
@@ -678,9 +730,10 @@ function init() {
 
             const desc = form.querySelector('textarea')?.value.trim() || '';
 
-            async function injectCard(imgSrc) {
+            async function injectCard(images) {
                 const newEventPayload = {
-                    img: imgSrc,
+                    img: images[0] || placeholders[category] || placeholders.Workshop,
+                    images: images,
                     title,
                     date: dateDisplay,
                     isoDate: dateRaw ? dateRaw + 'T' + (timeRaw || '00:00') : new Date().toISOString(),
@@ -717,7 +770,7 @@ function init() {
                     card.className = 'event-card-neon relative rounded-2xl overflow-hidden h-[300px] border border-accent/20 cursor-pointer opacity-80 hover:-translate-y-1 transition-all';
                     card.onclick = () => window.openEventDetail(docId);
                     card.innerHTML = `
-                        <img src="${imgSrc}" alt="${title}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                        <img src="${createdEvent.img}" alt="${title}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
                         <div class="event-neon-gradient conducted-gradient"></div>
                         <div class="absolute top-3.5 left-3.5 right-3.5 flex justify-between z-2">
                             <span class="inline-block text-[11px] font-bold px-3 py-1 rounded-xl bg-text2/10 text-text2">✓ Completed</span>
@@ -733,7 +786,7 @@ function init() {
                     card.className = 'event-card-neon relative rounded-2xl overflow-hidden h-[300px] border border-accent/20 cursor-pointer hover:-translate-y-1 transition-all';
                     card.onclick = () => window.openEventDetail(docId);
                     card.innerHTML = `
-                        <img src="${imgSrc}" alt="${title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+                        <img src="${createdEvent.img}" alt="${title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
                         <div class="event-neon-gradient"></div>
                         <div class="absolute top-3.5 left-3.5 right-3.5 flex justify-between z-2">
                             <span class="inline-block text-[11px] font-bold px-3 py-1 rounded-xl bg-accent/20 text-accent-light">Upcoming</span>
@@ -764,13 +817,9 @@ function init() {
                 }
             }
 
-            // Use first accumulated image or placeholder
-            const accumulated = fileInput?._accumulatedImages || [];
-            if (accumulated.length > 0) {
-                injectCard(accumulated[0]);
-            } else {
-                injectCard(placeholders[category] || placeholders.Workshop);
-            }
+            // Use all accumulated images
+            const images = fileInput?._accumulatedImages || [];
+            injectCard(images);
 
             form.reset();
             const lbl = document.getElementById('eventFileLabel');
@@ -861,17 +910,18 @@ function init() {
             const starInput = document.getElementById('projectStar');
             
             const fileInput = document.getElementById('projectFileInput');
-            let imgSrc = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop';
+            let images = [];
             if (fileInput && fileInput.files.length > 0) {
-                 const file = fileInput.files[0];
-                 const reader = new FileReader();
-                 // Create a promise to wait for file read
-                 const base64Str = await new Promise((resolve) => {
-                     reader.onload = (ev) => resolve(ev.target.result);
-                     reader.readAsDataURL(file);
-                 });
-                 imgSrc = base64Str;
+                 for (const file of fileInput.files) {
+                     const reader = new FileReader();
+                     const base64Str = await new Promise((resolve) => {
+                         reader.onload = (ev) => resolve(ev.target.result);
+                         reader.readAsDataURL(file);
+                     });
+                     images.push(base64Str);
+                 }
             }
+            const imgSrc = images[0] || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=400&fit=crop';
 
             const title = titleInput?.value.trim() || 'Untitled Project';
             const description = descInput?.value.trim() || '';
@@ -887,7 +937,8 @@ function init() {
                 githubUrl,
                 demoUrl,
                 starUrl,
-                imgSrc
+                imgSrc,
+                images
             };
 
             try {
@@ -928,16 +979,18 @@ function init() {
             const githubInput = document.getElementById('teamGithub');
             
             const fileInput = document.getElementById('teamFileInput');
-            let imgSrc = 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=600&fit=crop'; // fallback
+            let images = [];
             if (fileInput && fileInput.files.length > 0) {
-                 const file = fileInput.files[0];
-                 const reader = new FileReader();
-                 const base64Str = await new Promise((resolve) => {
-                     reader.onload = (ev) => resolve(ev.target.result);
-                     reader.readAsDataURL(file);
-                 });
-                 imgSrc = base64Str;
+                 for (const file of fileInput.files) {
+                     const reader = new FileReader();
+                     const base64Str = await new Promise((resolve) => {
+                         reader.onload = (ev) => resolve(ev.target.result);
+                         reader.readAsDataURL(file);
+                     });
+                     images.push(base64Str);
+                 }
             }
+            const imgSrc = images[0] || 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=600&fit=crop';
 
             const name = nameInput?.value.trim() || 'Anonymous Member';
             const role = roleInput?.value.trim() || 'Member';
@@ -951,7 +1004,8 @@ function init() {
                 bio,
                 linkedinUrl,
                 githubUrl,
-                imgSrc
+                imgSrc,
+                images
             };
 
             try {

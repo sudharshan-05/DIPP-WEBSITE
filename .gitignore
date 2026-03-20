@@ -1,3 +1,11 @@
+# Environment variables (secrets)
+.env
+server/.env
+
+# Temp test scripts
+server/check_schema.js
+server/test_all.js
+
 # Logs
 logs
 *.log
