@@ -1,4 +1,5 @@
 import './style.css';
+import { client } from '../sanity';
 import { applyRoleUI, logout, isAdmin, getCurrentUser, DEMO_ACCOUNTS } from './auth.js';
 import { updateReminderBadge, setReminder, hasReminder, renderCountdown, initCountdownTickers } from './reminders.js';
 import { initPageTransitions } from './transitions.js';
@@ -408,78 +409,124 @@ window.deleteEvent = async function (key) {
 const STORAGE_KEY = 'dipp_custom_events_v2';
 
 async function loadEventsFromStorage() {
-    // 1. Remove hardcoded event cards that were previously deleted
-    const deletedEvents = getDeletedEvents();
-    deletedEvents.forEach(key => {
-        if (eventData[key]) eventData[key]._deleted = true;
-        // Remove matching static cards from DOM
-        document.querySelectorAll('.event-card-neon').forEach(card => {
-            const onc = card.getAttribute('onclick') || '';
-            if (onc.includes(`'${key}'`)) card.remove();
-        });
-    });
 
-    // 2. Load dynamically added events from backend
     try {
-        const res = await fetch('/api/events');
-        if (!res.ok) throw new Error("Failed to fetch events");
-        const events = await res.json();
-        
-        const placeholders = {
-            Workshop: 'https://images.unsplash.com/photo-1531746790095-e5325c943422?w=600&h=400&fit=crop',
-            Hackathon: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&h=400&fit=crop',
-            Competition: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&h=400&fit=crop',
-            Seminar: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&h=400&fit=crop',
-        };
-        for (const e of events) {
-            const docId = e.id;
-            eventData[docId] = e; // Store in local map
-            const gridId = e.conducted ? 'conductedEventsGrid' : 'upcomingEventsGrid';
-            const grid = document.getElementById(gridId);
-            if (!grid) continue;
-            const card = document.createElement('div');
-            card.dataset.category = e.category;
-            card.dataset.date = e.isoDate?.split('T')[0] || '';
-            const imgSrc = e.img || placeholders[e.category] || placeholders.Workshop;
-            if (e.conducted) {
-                card.className = 'event-card-neon relative rounded-2xl overflow-hidden h-[300px] border border-accent/20 cursor-pointer opacity-80 hover:-translate-y-1 transition-all';
-                card.onclick = () => window.openEventDetail(docId);
-                card.innerHTML = `
-                    <img src="${imgSrc}" alt="${e.title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
-                    <div class="event-neon-gradient conducted-gradient"></div>
-                    <div class="absolute top-3.5 left-3.5 right-3.5 flex justify-between z-2">
-                        <span class="inline-block text-[11px] font-bold px-3 py-1 rounded-xl bg-text2/10 text-text2">✓ Completed</span>
-                        <span class="text-xs text-text2 bg-black/40 px-2.5 py-0.5 rounded-lg">${e.date}</span>
-                    </div>
-                    <div class="absolute bottom-0 left-0 right-0 p-5 z-2">
-                        <h4 class="text-lg font-bold mb-2">${e.title}</h4>
-                        <span class="inline-flex items-center text-xs font-semibold px-4 py-2 rounded-full bg-white/5 text-white border border-white/12">👁 View Highlights</span>
-                    </div>
-                    <button class="delete-btn absolute top-2.5 right-2.5 z-5 w-7 h-7 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-[13px] cursor-pointer flex items-center justify-center hover:bg-red-500 hover:text-white admin-only"
-                        onclick="event.stopPropagation();window.deleteEvent('${docId}')" title="Delete">🗑</button>`;
-            } else {
-                card.className = 'event-card-neon relative rounded-2xl overflow-hidden h-[300px] border border-accent/20 cursor-pointer hover:-translate-y-1 transition-all';
-                card.onclick = () => window.openEventDetail(docId);
-                card.innerHTML = `
-                    <img src="${imgSrc}" alt="${e.title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
-                    <div class="event-neon-gradient"></div>
-                    <div class="absolute top-3.5 left-3.5 right-3.5 flex justify-between z-2">
-                        <span class="inline-block text-[11px] font-bold px-3 py-1 rounded-xl bg-accent/20 text-accent-light">Upcoming</span>
-                        <span class="text-xs text-text2 bg-black/40 px-2.5 py-0.5 rounded-lg">${e.date}</span>
-                    </div>
-                    <div class="absolute bottom-0 left-0 right-0 p-5 z-2">
-                        <h4 class="text-lg font-bold mb-2">${e.title}</h4>
-                        <span class="inline-flex items-center text-xs font-semibold px-4 py-2 rounded-full bg-accent text-white">Register</span>
-                    </div>
-                    <button class="delete-btn absolute top-2.5 right-2.5 z-5 w-7 h-7 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-[13px] cursor-pointer flex items-center justify-center hover:bg-red-500 hover:text-white admin-only"
-                        onclick="event.stopPropagation();window.deleteEvent('${docId}')" title="Delete">🗑</button>`;
-            }
-            grid.appendChild(card);
-            if (isAdmin()) {
-                card.querySelectorAll('.admin-only').forEach(el => { el.style.display = ''; el.style.opacity = '1'; });
-            }
-        }
-    } catch (e) { console.warn('loadEvents API Error:', e); }
+
+        const query = `*[_type == "event"]{
+            _id,
+            title,
+            date,
+            isoDate,
+            time,
+            venue,
+            duration,
+            category,
+            audience,
+            about,
+            conducted,
+            googleFormLink,
+            "img": poster.asset->url
+        }`
+
+        const events = await client.fetch(query)
+
+        const upcomingGrid =
+            document.getElementById('upcomingEventsGrid')
+
+        const conductedGrid =
+            document.getElementById('conductedEventsGrid')
+
+        if (upcomingGrid) upcomingGrid.innerHTML = ''
+        if (conductedGrid) conductedGrid.innerHTML = ''
+
+        events.forEach((e) => {
+
+            eventData[e._id] = e
+
+            const grid =
+                e.conducted
+                    ? conductedGrid
+                    : upcomingGrid
+
+            if (!grid) return
+
+            const card = document.createElement('div')
+
+            card.className =
+                `event-card-neon relative rounded-2xl overflow-hidden h-[300px] border border-accent/20 cursor-pointer transition-all ${e.conducted ? 'opacity-80' : 'hover:-translate-y-1'
+                }`
+
+            card.onclick = () =>
+                window.openEventDetail(e._id)
+
+            card.innerHTML = `
+
+                <img 
+                    src="${e.img}" 
+                    alt="${e.title}" 
+                    class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                >
+
+                <div class="event-neon-gradient ${e.conducted ? 'conducted-gradient' : ''}"></div>
+
+                <div class="absolute top-3.5 left-3.5 right-3.5 flex justify-between z-2">
+
+                    <span class="
+                        inline-block text-[11px] font-bold px-3 py-1 rounded-xl
+                        ${e.conducted
+                    ? 'bg-text2/10 text-text2'
+                    : 'bg-accent/20 text-accent-light'}
+                    ">
+                        ${e.conducted ? '✓ Completed' : 'Upcoming'}
+                    </span>
+
+                    <span class="
+                        text-xs text-text2
+                        bg-black/40 px-2.5 py-0.5 rounded-lg
+                    ">
+                        ${e.date}
+                    </span>
+
+                </div>
+
+                <div class="absolute bottom-0 left-0 right-0 p-5 z-2">
+
+                    <h4 class="text-lg font-bold mb-2">
+                        ${e.title}
+                    </h4>
+
+                    <p class="text-[11px] text-text2 mb-2">
+                        📍 ${e.venue}
+                    </p>
+
+                    <span class="
+                        inline-flex items-center
+                        text-xs font-semibold
+                        px-4 py-2 rounded-full
+                        ${e.conducted
+                    ? 'bg-white/5 text-white border border-white/12'
+                    : 'bg-accent text-white'}
+                    ">
+                        ${e.conducted
+                    ? '👁 View Highlights'
+                    : '📋 Register'}
+                    </span>
+
+                </div>
+            `
+
+            grid.appendChild(card)
+
+        })
+
+        console.log("✅ Events Loaded From Sanity")
+
+    } catch (error) {
+
+        console.error("❌ Sanity Fetch Error:", error)
+
+    }
+
 }
 
 // Legacy unused now that saveEventsToStorage is gone, keeping just to avoid undefined errors if called inline
@@ -1087,287 +1134,244 @@ function initAlbumForm() {
 }
 
 async function loadGalleryFromBackend() {
-    const gallerySection = document.querySelector('#gallery .max-w-\\[1200px\\]');
-    if (!gallerySection) return;
+
     try {
-        const res = await fetch('/api/gallery');
-        if (!res.ok) throw new Error("Failed to fetch gallery");
-        const albums = await res.json();
-        
-        if (albums && albums.length > 0) {
-            // Remove existing dynamic albums if any
-            // We clear everything in the gallery container after the header to be clean.
-            const header = gallerySection.querySelector('.flex.flex-col.md\\:flex-row');
-            if (header) {
-                while (gallerySection.lastChild && gallerySection.lastChild !== header) {
-                    gallerySection.removeChild(gallerySection.lastChild);
-                }
-            }
-            
-            for (const album of albums) {
-                renderAlbum(album);
-            }
-        }
-    } catch (e) {
-        console.warn('loadGallery API Error:', e);
+
+        const query = `*[_type == "gallery"]{
+            _id,
+            title,
+            "images": images[].asset->url
+        }`
+
+        const gallery = await client.fetch(query)
+
+        console.log("✅ Gallery Loaded:", gallery)
+
+        const galleryGrid =
+            document.getElementById('galleryGrid')
+
+        if (!galleryGrid) return
+
+        galleryGrid.innerHTML = ''
+
+        gallery.forEach((album) => {
+
+            album.images?.forEach((img) => {
+
+                const image = document.createElement('img')
+
+                image.src = img
+
+                image.className =
+                    'rounded-2xl object-cover w-full h-[250px] hover:scale-105 transition-all duration-500'
+
+                galleryGrid.appendChild(image)
+
+            })
+
+        })
+
+    } catch (error) {
+
+        console.error("❌ Gallery Fetch Error:", error)
+
     }
-}
 
-function renderAlbum(album) {
-    const gallerySection = document.querySelector('#gallery .max-w-\\[1200px\\]');
-    if (!gallerySection) return;
-
-    const albumBlock = document.createElement('div');
-    albumBlock.className = 'mb-12 reveal revealed';
-    
-    // Create image grid HTML
-    const imgGrid = (album.images || []).map(src => `
-        <div class="rounded-lg overflow-hidden aspect-[4/3] cursor-pointer relative group">
-            <img src="${src}" alt="${album.name}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.06]">
-            ${isAdmin() ? `
-            <button class="absolute top-2 right-2 z-5 w-7 h-7 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-[13px] cursor-pointer flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all admin-only"
-                onclick="event.stopPropagation(); this.closest('div.group').remove()">🗑</button>` : ''}
-        </div>`).join('');
-
-    albumBlock.innerHTML = `
-        <div class="flex justify-between items-start mb-5 gap-5 max-[900px]:flex-col">
-            <div>
-                <h3 class="text-[22px] font-extrabold mb-1.5">${album.name}</h3>
-                ${album.summary ? `<p class="text-[13px] text-text2 leading-relaxed max-w-[450px]">${album.summary}</p>` : ''}
-            </div>
-            <div class="flex items-center gap-3.5 shrink-0">
-                <span class="text-[13px] text-text2 italic">Build. Break. Innovate.</span>
-                ${isAdmin() ? `<button class="bg-red-500/10 text-red-400 border border-red-500/25 text-xs font-semibold px-3 py-1 rounded-xl cursor-pointer hover:bg-red-500 hover:text-white transition-all"
-                    onclick="window.deleteAlbum('${album.id}')">🗑 Remove Album</button>` : ''}
-            </div>
-        </div>
-        <div class="grid grid-cols-3 max-[900px]:grid-cols-2 max-[480px]:grid-cols-1 gap-3.5 glass-card rounded-2xl p-4">
-            ${imgGrid}
-        </div>`;
-
-    gallerySection.appendChild(albumBlock);
-}
-
-window.deleteAlbum = async function(id) {
-    if (!confirm('Are you sure you want to delete this album?')) return;
-    try {
-        const res = await fetch(`/api/gallery/${id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error("Failed to delete album");
-        showToast('🗑 Album removed.');
-        loadGalleryFromBackend();
-    } catch (e) {
-        console.error(e);
-        showToast('❌ Error deleting album.');
-    }
-}
-
-function resetAlbumForm() {
-    const form = document.getElementById('addAlbumForm');
-    if (form) form.reset();
-    const preview = document.getElementById('albumPreview');
-    if (preview) preview.innerHTML = '';
-    const label = document.getElementById('albumFileLabel');
-    if (label) label.textContent = 'Click to browse or drag & drop images';
-    const dropArea = document.getElementById('albumDropArea');
-    if (dropArea) { dropArea.style.borderColor = ''; dropArea.style.background = ''; }
 }
 
 // ---- Projects API Integration ----
 async function loadProjectsFromBackend() {
-    const grid = document.getElementById('projectsGrid');
-    if (!grid) return;
+
     try {
-        const res = await fetch('/api/projects');
-        if (!res.ok) throw new Error("Failed to fetch projects");
-        const projects = await res.json();
-        
-        // If we have data from backend, clear grid and show it.
-        // Otherwise keep the original hardcoded ones if any.
-        if (projects && projects.length > 0) {
-            grid.innerHTML = ''; 
-            for (const p of projects) {
-                renderProjectCard(p);
-            }
-        }
-    } catch (e) {
-        console.warn('loadProjects API Error:', e);
-        // On error, we keep whatever is currently in the DOM.
-    }
-}
 
-function renderProjectCard(p) {
-    const grid = document.getElementById('projectsGrid');
-    if (!grid) return;
-    
-    const card = document.createElement('div');
-    card.className = 'glass-card rounded-2xl overflow-hidden project-card relative';
-    
-    // Admin Delete Button
-    let adminBtnHTML = '';
-    if (isAdmin()) {
-        adminBtnHTML = `<button class="absolute top-2.5 right-2.5 z-[5] w-7 h-7 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-[13px] cursor-pointer flex items-center justify-center hover:bg-red-500 hover:text-white"
-                        onclick="event.stopPropagation();window.deleteProject('${p.id}')" title="Delete">🗑</button>`;
+        const query = `*[_type == "project"]{
+            _id,
+            title,
+            description,
+            github,
+            demo,
+            "img": image.asset->url
+        }`
+
+        const projects = await client.fetch(query)
+
+        console.log("✅ Projects Loaded:", projects)
+
+        const projectsGrid =
+            document.getElementById('projectsGrid')
+
+        if (!projectsGrid) return
+
+        projectsGrid.innerHTML = ''
+
+        projects.forEach((project) => {
+
+            const card = document.createElement('div')
+
+            card.className =
+                'glass-card rounded-2xl overflow-hidden'
+
+            card.innerHTML = `
+
+                <img 
+                    src="${project.img}" 
+                    class="w-full h-52 object-cover"
+                >
+
+                <div class="p-5">
+
+                    <h3 class="text-xl font-bold mb-2">
+                        ${project.title}
+                    </h3>
+
+                    <p class="text-text2 text-sm mb-4">
+                        ${project.description}
+                    </p>
+
+                    <div class="flex gap-3">
+
+                        <a 
+                            href="${project.github}"
+                            target="_blank"
+                            class="bg-accent px-4 py-2 rounded-xl text-white text-sm"
+                        >
+                            GitHub
+                        </a>
+
+                        <a 
+                            href="${project.demo}"
+                            target="_blank"
+                            class="border border-white/20 px-4 py-2 rounded-xl text-sm"
+                        >
+                            Demo
+                        </a>
+
+                    </div>
+
+                </div>
+            `
+
+            projectsGrid.appendChild(card)
+
+        })
+
+    } catch (error) {
+
+        console.error("❌ Project Fetch Error:", error)
+
     }
 
-    const tagsHTML = (p.tags || []).map(t => `<span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-2xl bg-accent/10 text-accent-light border border-accent/12">${t}</span>`).join('');
-    
-    card.innerHTML = `
-        ${adminBtnHTML}
-        <div class="h-[180px] overflow-hidden">
-            <img src="${p.imgSrc}" alt="${p.title}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-[1.06]">
-        </div>
-        <div class="p-5 pb-14">
-            <h4 class="text-base font-bold mb-2">${p.title}</h4>
-            <p class="text-[13px] text-text2 leading-relaxed mb-3.5">${p.description}</p>
-            <div class="flex gap-1.5 flex-wrap">
-                ${tagsHTML}
-            </div>
-        </div>
-        <div class="dock-wrap">
-            <div class="dock">
-                ${p.githubUrl ? `<a href="${p.githubUrl}" class="dock-item" data-tip="GitHub" target="_blank" rel="noopener">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.483 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.742 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" />
-                    </svg>
-                </a>` : ''}
-                ${p.demoUrl ? `<a href="${p.demoUrl}" class="dock-item" data-tip="Live Demo" target="_blank" rel="noopener">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6" />
-                        <polyline points="15 3 21 3 21 9" />
-                        <line x1="10" y1="14" x2="21" y2="3" />
-                    </svg>
-                </a>` : ''}
-                ${p.starUrl ? `
-                <div class="dock-sep"></div>
-                <a href="${p.starUrl}" class="dock-item" data-tip="Star" target="_blank" rel="noopener">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                    </svg>
-                </a>` : ''}
-            </div>
-        </div>
-    `;
-    
-    // Add the card to the DOM
-    grid.appendChild(card);
-    
-    // Re-initialize hover magnification for the newly added dock items
-    if (typeof initDockMagnification === 'function') {
-        initDockMagnification();
-    }
-}
-
-window.deleteProject = async function(id) {
-    if (!confirm('Are you sure you want to delete this project?')) return;
-    try {
-        const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error("Failed to delete project");
-        
-        // Reload projects from backend to refresh the DOM
-        loadProjectsFromBackend();
-        showToast('🗑 Project deleted successfully');
-    } catch (e) {
-        console.error(e);
-        showToast('❌ Error deleting project.');
-    }
 }
 
 // ---- Team API Integration ----
 async function loadTeamFromBackend() {
+
     const carousel = document.getElementById('teamCarousel');
+
     if (!carousel) return;
+
     try {
-        const res = await fetch('/api/team');
-        if (!res.ok) throw new Error("Failed to fetch team members");
-        const members = await res.json();
-        
-        if (members && members.length > 0) {
-            carousel.innerHTML = ''; 
-            for (const m of members) {
-                renderTeamMember(m);
+
+        const query = `*[_type == "team"]{
+            _id,
+            name,
+            role,
+            bio,
+            linkedin,
+            github,
+            "img": photo.asset->url
+        }`
+
+        const members = await client.fetch(query);
+
+        carousel.innerHTML = '';
+
+        members.forEach((m, index) => {
+
+            const card = document.createElement('div');
+
+            card.className = 'team-ds-card';
+
+            card.addEventListener('click', () => {
+
+                const isActive =
+                    card.classList.contains('team-ds-active');
+
+                document
+                    .querySelectorAll('.team-ds-card')
+                    .forEach(c =>
+                        c.classList.remove('team-ds-active')
+                    );
+
+                if (!isActive)
+                    card.classList.add('team-ds-active');
+
+            });
+
+            const img =
+                m.img ||
+                'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=600&fit=crop';
+
+            card.innerHTML = `
+
+                <div class="team-ds-grid"></div>
+
+                <div class="team-ds-img-wrap">
+                    <img src="${img}" alt="${m.name}">
+                    <div class="team-ds-img-overlay"></div>
+                </div>
+
+                <div class="team-ds-info">
+                    <h4 class="team-ds-name">${m.name}</h4>
+                    <p class="team-ds-role">${m.role}</p>
+                </div>
+
+                <div class="team-ds-desc">
+
+                    ${m.bio || ''}
+
+                    <div class="flex gap-2 mt-4 relative z-20">
+
+                        ${m.linkedin ? `
+                        <a href="${m.linkedin}" target="_blank"
+                        class="team-social-btn"
+                        onclick="event.stopPropagation()">
+
+                        LinkedIn
+
+                        </a>` : ''}
+
+                        ${m.github ? `
+                        <a href="${m.github}" target="_blank"
+                        class="team-social-btn"
+                        onclick="event.stopPropagation()">
+
+                        GitHub
+
+                        </a>` : ''}
+
+                    </div>
+
+                </div>
+            `;
+
+            if (index === 0) {
+                card.classList.add('team-ds-active');
             }
-        }
+
+            carousel.appendChild(card);
+
+        });
+
+        console.log("✅ Team Loaded From Sanity");
+
     } catch (e) {
-        console.warn('loadTeam API Error:', e);
+
+        console.error('❌ Team Sanity Error:', e);
+
     }
+
 }
-
-function renderTeamMember(m) {
-    const carousel = document.getElementById('teamCarousel');
-    if (!carousel) return;
-    
-    const card = document.createElement('div');
-    card.className = 'team-ds-card';
-    card.addEventListener('click', () => {
-        const isActive = card.classList.contains('team-ds-active');
-        // Collapse all cards
-        document.querySelectorAll('.team-ds-card').forEach(c => c.classList.remove('team-ds-active'));
-        // Expand clicked card if it wasn't already active
-        if (!isActive) card.classList.add('team-ds-active');
-    });
-
-    // Admin Delete Button
-    let adminBtnHTML = '';
-    if (isAdmin()) {
-        adminBtnHTML = `<button class="absolute top-2.5 right-2.5 z-[30] w-7 h-7 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-[13px] cursor-pointer flex items-center justify-center hover:bg-red-500 hover:text-white"
-                        onclick="event.stopPropagation();window.deleteTeamMember('${m.id}')" title="Delete">🗑</button>`;
-    }
-    
-    // Fallback image if missing
-    const img = m.imgSrc || 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=600&fit=crop';
-    
-    card.innerHTML = `
-        ${adminBtnHTML}
-        <div class="team-ds-grid"></div>
-        <div class="team-ds-img-wrap">
-            <img src="${img}" alt="${m.name}">
-            <div class="team-ds-img-overlay"></div>
-        </div>
-        <div class="team-ds-info">
-            <h4 class="team-ds-name">${m.name}</h4>
-            <p class="team-ds-role">${m.role}</p>
-        </div>
-        <div class="team-ds-desc">
-            ${m.bio}
-            <div class="flex gap-2 mt-4 relative z-20">
-                ${m.linkedinUrl ? `
-                <a href="${m.linkedinUrl}" target="_blank" rel="noopener" class="team-social-btn" onclick="event.stopPropagation()">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg>
-                </a>` : ''}
-                ${m.githubUrl ? `
-                <a href="${m.githubUrl}" target="_blank" rel="noopener" class="team-social-btn" onclick="event.stopPropagation()">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.483 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.742 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" />
-                    </svg>
-                </a>` : ''}
-            </div>
-        </div>
-    `;
-    
-    // Auto-expand the first card if carousel was empty
-    if (carousel.children.length === 0) {
-        card.classList.add('team-ds-active');
-    }
-    
-    carousel.appendChild(card);
-}
-
-window.deleteTeamMember = async function(id) {
-    if (!confirm('Are you sure you want to remove this team member?')) return;
-    try {
-        const res = await fetch(`/api/team/${id}`, { method: 'DELETE' });
-        if (!res.ok) throw new Error("Failed to delete team member");
-        
-        loadTeamFromBackend();
-        showToast('🗑 Team member removed.');
-    } catch (e) {
-        console.error(e);
-        showToast('❌ Error deleting team member.');
-    }
-}
-
 // ---- Stat counters ----
 function animateCounters() {
     document.querySelectorAll('[data-target]').forEach(el => {
